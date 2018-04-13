@@ -56,9 +56,9 @@ def ExecuteCommand(command):
         result = requests.post(uri, payload, timeout=5).text.strip()
     else:
         result = requests.post(uri, payload, timeout=5, proxies={'http': PROXY}).text.strip()
-    start = result.find('</h2><pre>#STARTOUT#') + 10
+    start = result.find('</h2><pre>#STARTOUT# ') + 21
     end = result.find('#ENDOUT#', start)
-    starterr = result.find('#STARTERR#', end) + 10
+    starterr = result.find('#STARTERR# ', end) + 11
     enderr = result.find('#ENDERR#', starterr)
     return result[start:end] + '\n' + result[starterr:enderr]
 
